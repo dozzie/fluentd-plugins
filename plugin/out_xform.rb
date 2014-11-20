@@ -145,6 +145,7 @@ class XForm < Fluent::Output
         $log.warn_backtrace
       end
     }
+    chain.next
   end
 
   #---------------------------------------------------------------------------

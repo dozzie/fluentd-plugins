@@ -65,6 +65,7 @@ class ZeroMQJSON < Fluent::Output
         @zmq_out.send(record.to_json)
       }
     end
+    chain.next
   end
 end
 
