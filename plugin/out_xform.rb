@@ -34,7 +34,9 @@
 # `yield' may be called as many times as needed, creating new messages or
 # swallowing current altogether.
 #
-# Note that if the `transform()' raises an exception, the message is lost.
+# NOTE: `new_time' must be an integer, it can't be `Time'.
+#
+# NOTE: If the `transform()' raises an exception, the message is lost.
 #
 # For `xform_class', class definition is as follows:
 #
