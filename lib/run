@@ -1,0 +1,24 @@
+#!/usr/bin/ruby
+# Simple example showing how to check particular xform script.
+
+require "json"
+
+eval File.read "ssmm_graphite.rb"
+def __transform(time, tag, record)
+  split(time, tag, record) {|time, tag, msg|
+    puts JSON.dump(msg)
+  }
+end
+
+while true
+  begin
+    msg = JSON.load(STDIN.readline)
+    __transform(Time.now.to_i, "any", msg)
+  rescue EOFError => e
+    break
+  rescue Interrupt => e
+    break
+  rescue JSON::ParserError => e
+    STDERR.puts "invalid JSON, skipping"
+  end
+end
