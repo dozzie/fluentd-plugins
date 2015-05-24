@@ -190,7 +190,11 @@ class XForm < Fluent::Output
       rescue => e
         $log.warn "error when processing message",
                   :error_class => e.class, :error => e,
-                  :script => @xform_script, :function => @xform_function,
+                  :xform => {
+                    :script => @xform_script,
+                    :function => @xform_function,
+                    :class => @xform_class,
+                  },
                   :time => time, :tag => tag, :message => record
         $log.warn_backtrace
       end
