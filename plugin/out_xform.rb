@@ -223,11 +223,6 @@ class XForm < Fluent::Output
       new_methods << id unless id == :singleton_method_added # skip myself
     }
 
-    # context.singleton_class::Nabla.new()
-    # context.singleton_class.constants
-    #   => [:Nabla]
-    # context.singleton_class.const_get(:Nabla).new()
-
     context.instance_eval File.read(file)
 
     functions = Hash[ new_methods.map{|m| [m, context.method(m)]} ]
