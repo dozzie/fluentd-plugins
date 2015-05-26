@@ -90,6 +90,19 @@ class ElasticSearchLogStash < Fluent::BufferedOutput
   # ElasticSearch client {{{
 
   class ElasticSearchClient
+    class HTTPError < StandardError
+      attr_reader :code
+      attr_reader :message
+      def initialize(code, message)
+        @code = code
+        @message = message
+      end
+
+      def to_s
+        return "HTTP #{@code}: #{@message}"
+      end
+    end
+
     def initialize(url)
       @url = URI(url)
       @http = Net::HTTP.new @url.host, @url.port
@@ -114,9 +127,13 @@ class ElasticSearchLogStash < Fluent::BufferedOutput
     def flush
       return if @buffer.empty?
       reply = @http.post "#{@path}/_bulk", @buffer.join("")
-      # TODO: catch Errno::ECONNREFUSED and Timeout::Error
+      # NOTE: Errno::ECONNREFUSED and Timeout::Error are not caught
+      if not reply.is_a? Net::HTTPSuccess
+        raise HTTPError.new(reply.code, reply.message)
+      end
+
       # TODO: do something with `reply' and `JSON.load(reply.body)'
-      # TODO: raise if not reply.is_a? Net::HTTPSuccess
+
       @buffer.clear
     end
   end
