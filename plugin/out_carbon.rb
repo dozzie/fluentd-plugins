@@ -54,18 +54,14 @@ class CarbonOutput < Fluent::BufferedOutput
   end
 
   def format(tag, time, record)
-    puts "got a record"
     if record.has_key?("metric") && record.has_key?("value")
-      puts "## #{record['metric']} #{record['value']} #{time.to_i}"
       return "#{record['metric']} #{record['value']} #{time.to_i}\n"
     else
-      puts "## ignored"
       return nil
     end
   end
 
   def write(chunk)
-    puts "writing bunch of records"
     sock = TCPSocket.new @host, @port
     sock.puts chunk.read
     sock.close
